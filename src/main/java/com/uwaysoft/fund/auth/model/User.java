@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by zhouchang on 2017/5/18.
@@ -27,6 +29,9 @@ public class User {
     private Date createTime;
     private User createUser;
 
+    private Set<Role> roles = new HashSet<Role>();
+
+
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
     @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
@@ -46,6 +51,8 @@ public class User {
         this.name = name;
     }
 
+    @Column(name = "GENDER")
+    @ManyToOne(targetEntity = Dic.class, fetch = FetchType.LAZY)
     public Dic getGender() {
         return gender;
     }
@@ -73,11 +80,11 @@ public class User {
         this.credentialsNum = credentialsNum;
     }
 
+    @Column(length = 100)
     public String getEmail() {
         return email;
     }
 
-    @Column(length = 100)
     public void setEmail(String email) {
         this.email = email;
     }
@@ -153,5 +160,17 @@ public class User {
 
     public void setCreateUser(User createUser) {
         this.createUser = createUser;
+    }
+
+    @ManyToMany(fetch=FetchType.LAZY, targetEntity=Role.class)
+    @JoinTable(name="FU_AU_USER_ROLE",
+            joinColumns=@JoinColumn(name="USER_ID", referencedColumnName="ID"),
+            inverseJoinColumns=@JoinColumn(name="ROLE_ID", referencedColumnName="ID"))
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

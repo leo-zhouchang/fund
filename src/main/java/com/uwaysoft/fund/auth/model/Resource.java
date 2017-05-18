@@ -5,6 +5,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by zhouchang on 2017/5/18.
@@ -20,6 +22,8 @@ public class Resource {
     private Dic available;
     private Date createTime;
     private User createUser;
+
+    private Set<Role> roles = new HashSet<Role>();
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -102,5 +106,14 @@ public class Resource {
 
     public void setCreateUser(User createUser) {
         this.createUser = createUser;
+    }
+
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy="resources", targetEntity=Role.class)
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

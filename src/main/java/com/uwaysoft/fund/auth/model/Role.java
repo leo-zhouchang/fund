@@ -3,8 +3,11 @@ package com.uwaysoft.fund.auth.model;
 import com.uwaysoft.fund.core.model.Dic;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.jws.soap.SOAPBinding;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by zhouchang on 2017/5/18.
@@ -18,6 +21,10 @@ public class Role {
     private Dic available;
     private Date createTime;
     private User createUser;
+
+    private Set<User> users = new HashSet<User>();
+
+    private Set<Resource> resources = new HashSet<Resource>();
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -81,5 +88,26 @@ public class Role {
 
     public void setCreateUser(User createUser) {
         this.createUser = createUser;
+    }
+
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy="roles", targetEntity=User.class)
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    @ManyToMany(fetch=FetchType.LAZY, targetEntity=Role.class)
+    @JoinTable(name="FU_AU_ROLE_RES",
+            joinColumns=@JoinColumn(name="ROLE_ID", referencedColumnName="ID"),
+            inverseJoinColumns=@JoinColumn(name="RES_ID", referencedColumnName="ID"))
+    public Set<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(Set<Resource> resources) {
+        this.resources = resources;
     }
 }

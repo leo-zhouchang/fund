@@ -73,7 +73,7 @@ public class UserLogin {
     }
 
     @Column(name = "USER_ID",length = 32)
-    @ManyToOne(targetEntity = User.class,fetch = FetchType.LAZY)
+    @OneToOne(targetEntity = User.class,fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     public User getUser() {
         return user;
     }
