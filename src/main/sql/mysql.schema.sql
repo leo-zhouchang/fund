@@ -6,7 +6,9 @@ use fund;
 1. FU_ -> 本项目手动创建的表
 2. FU_AU_ -> 本项目权限相关的表 AU(Authorization 授权)
 3. FU_GE_ -> 一般（general）项目资金卡表，
-  之后的 FU_RE_ -> 科研(research)  FU_PR_ -> 项目(project)
+   FU_RE_ -> 科研(research)
+   FU_PR_ -> 项目(project)
+   FU_CO_ -> 工程共用的表 (core)
 4. ACT_ -> 工作流框架 Activiti5 自动建的表，其表结构及数据不可修改，否则流程异常。
 
       项目约定：
@@ -14,7 +16,6 @@ use fund;
 2. 所有表名及字段名请使用大写，以下划线分隔；
 3. 所有建表语名，请写在此 schema 文件中；
 4. 对表结构或字段进行修改，请记录在 alter文件中，务必记录版本号及时间；
-5.
 
 */
 -- 创建用户登陆表，此表只记录用户登陆名及密码等信息
@@ -108,4 +109,29 @@ CREATE TABLE `FU_AU_ROLE_RES`(
   PRIMARY KEY (`ID`),
   UNIQUE (`ROLE_ID`,`RES_ID`)
 )ENGINE = InnoDB DEFAULT CHARSET = UTF8 COMMENT '角色与资源关系表';
+
+CREATE TABLE `FU_CO_DIC_CATEGORY`(
+  `ID` VARCHAR(32) NOT NULL COMMENT '主键',
+  `CATEGORY_TYPE` VARCHAR(50) NOT NULL COMMENT '当前分类所属模块(自定义)',
+  `NAME` VARCHAR(50) NOT NULL COMMENT '分类名称',
+  `CODE` VARCHAR(50) NOT NULL COMMENT '分类编码标识(大写)',
+  `DESCRIPTION` VARCHAR(200)  DEFAULT NULL COMMENT '字典分类描述',
+  `AVAILABLE` INTEGER DEFAULT 1 COMMENT '逻辑删除标识(1:正常,0:逻辑删除)',
+  `UPDATE_TIME` DATETIME COMMENT '最后修改时间',
+  `CREATE_TIME` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`ID`),
+  KEY (`CODE`)
+)ENGINE = InnoDB DEFAULT CHARSET = UTF8 COMMENT '字典分类表';
+
+CREATE TABLE `FU_CO_DIC`(
+  `ID` VARCHAR(32) NOT NULL COMMENT '主键',
+  `DIC_CATEGORY_ID` VARCHAR(32) NOT NULL COMMENT '关联字典分类表ID',
+  `NAME` VARCHAR(50) NOT NULL COMMENT '显示名',
+  `CODE` VARCHAR(50) NOT NULL COMMENT '字典编码标识(大写)',
+  `DESCRIPTION` VARCHAR(200) COMMENT '字典描述' ,
+  `AVAILABLE` INT DEFAULT 1 COMMENT '逻辑删除标识',
+  `UPDATE_TIME` DATETIME COMMENT '最后更新时间',
+  `CREATE_TIME` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`ID`)
+)ENGINE = InnoDB DEFAULT CHARSET = UTF8 COMMENT '系统字典表';
 

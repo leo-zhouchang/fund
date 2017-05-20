@@ -4,21 +4,25 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by zhouchang on 2017/5/18.
+ * Created by zhouchang on 2017/5/19.
  */
 @Entity
-@Table(name = "FU_CO_DIC")
-public class Dic {
+@Table(name="FU_CO_DIC_CATEGORY")
+public class DicCategory {
     private String id;
-    private DicCategory category;
+    private String categoryType;
     private String name;
     private String code;
     private String description;
     private Integer available;
     private Date updateTime;
     private Date createTime;
+
+    private Set<Dic> dics = new HashSet<Dic>();
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -31,17 +35,16 @@ public class Dic {
         this.id = id;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "DIC_CATEGORY_ID",referencedColumnName = "ID")
-    public DicCategory getCategory() {
-        return category;
+    @Column(name = "CATEGORY_TYPE",length = 50,nullable = false)
+    public String getCategoryType() {
+        return categoryType;
     }
 
-    public void setCategory(DicCategory category) {
-        this.category = category;
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
     }
 
-    @Column(name = "NAME", length = 50, nullable = false)
+    @Column(length = 50,nullable = false)
     public String getName() {
         return name;
     }
@@ -50,7 +53,7 @@ public class Dic {
         this.name = name;
     }
 
-    @Column(name = "CODE", length = 50, nullable = false)
+    @Column(length = 50, nullable = false)
     public String getCode() {
         return code;
     }
@@ -59,7 +62,7 @@ public class Dic {
         this.code = code;
     }
 
-    @Column(name = "DESCRIPTION", length = 200)
+    @Column(length = 200,name = "DESCRIPTION")
     public String getDescription() {
         return description;
     }
@@ -93,5 +96,14 @@ public class Dic {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @OneToMany(targetEntity = Dic.class,mappedBy = "category",cascade = CascadeType.ALL)
+    public Set<Dic> getDics() {
+        return dics;
+    }
+
+    public void setDics(Set<Dic> dics) {
+        this.dics = dics;
     }
 }
